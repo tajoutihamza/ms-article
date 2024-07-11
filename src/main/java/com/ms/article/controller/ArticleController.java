@@ -1,6 +1,7 @@
 package com.ms.article.controller;
 
 import com.ms.article.dto.ArticleDto;
+import com.ms.article.dto.DtoArticle;
 import com.ms.article.model.Article;
 import com.ms.article.service.IArticleService;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,15 @@ public class ArticleController {
     @GetMapping("/{id}/with-stock")
     public ResponseEntity<ArticleDto> getArticleWithStockInfo(@PathVariable Long id) {
         ArticleDto responseDTO = articleService.getArticleWithStockInfo(id);
+        if (responseDTO != null) {
+            return ResponseEntity.ok(responseDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/{id}/stock")
+    public ResponseEntity<DtoArticle> getArticleWithStockDto(@PathVariable Long id) {
+        DtoArticle responseDTO = articleService.getArticleWithStockDto(id);
         if (responseDTO != null) {
             return ResponseEntity.ok(responseDTO);
         } else {

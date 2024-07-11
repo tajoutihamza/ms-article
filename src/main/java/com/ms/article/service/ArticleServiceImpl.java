@@ -2,6 +2,7 @@ package com.ms.article.service;
 
 
 import com.ms.article.dto.ArticleDto;
+import com.ms.article.dto.DtoArticle;
 import com.ms.article.dto.StockDto;
 import com.ms.article.feign.StockClient;
 import com.ms.article.model.Article;
@@ -16,10 +17,12 @@ public class ArticleServiceImpl implements IArticleService {
 
     private final ArticleRepository articleRepository;
     private final StockClient stockClient;
+    private final StockService stockService;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository, StockClient stockClient) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, StockClient stockClient, StockService stockService) {
         this.articleRepository = articleRepository;
         this.stockClient = stockClient;
+        this.stockService = stockService;
     }
 
     @Override
@@ -52,6 +55,21 @@ public class ArticleServiceImpl implements IArticleService {
             responseDTO.setName(article.getName());
             responseDTO.setQuantity(article.getQuantity());
             responseDTO.setStockZone(stockDTO.getZone());
+            return responseDTO;
+        } else {
+            return null; // or throw an exception
+        }
+    }
+    @Override
+    public DtoArticle getArticleWithStockDto(Long id) {
+        Optional<Article> articleOpt = articleRepository.findById(id);
+        if (articleOpt.isPresent()) {
+            Article article = articleOpt.get();
+            StockDto stockDTO = stockService.getStockById(article.getStockId());
+            DtoArticle responseDTO = new DtoArticle();
+            responseDTO.setName(article.getName());
+            responseDTO.setQuantity(article.getQuantity());
+            responseDTO.setStockDto(stockDTO);
             return responseDTO;
         } else {
             return null; // or throw an exception
