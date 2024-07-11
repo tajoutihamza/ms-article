@@ -1,5 +1,6 @@
 package com.ms.article.controller;
 
+import com.ms.article.dto.ArticleDto;
 import com.ms.article.model.Article;
 import com.ms.article.service.IArticleService;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +54,14 @@ public class ArticleController {
                     articleService.deleteById(id);
                     return ResponseEntity.ok().build();
                 }).orElse(ResponseEntity.notFound().build());
+    }
+    @GetMapping("/{id}/with-stock")
+    public ResponseEntity<ArticleDto> getArticleWithStockInfo(@PathVariable Long id) {
+        ArticleDto responseDTO = articleService.getArticleWithStockInfo(id);
+        if (responseDTO != null) {
+            return ResponseEntity.ok(responseDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
